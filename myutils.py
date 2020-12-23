@@ -133,9 +133,9 @@ def MyDataLoader():
         ndata = np.load(file)    
         speech=torch.from_numpy(ndata["speech"].astype(np.float32)).clone()
         addnoise=torch.from_numpy(ndata["addnoise"].astype(np.float32)).clone()
-    
-        speech_trainlist.append(speech)
-        addnoise_trainlist.append(addnoise)
+        if speech.shape[1]==C.PATCH_LENGTH:
+            speech_trainlist.append(speech)
+            addnoise_trainlist.append(addnoise)
         
     train_num = use_data(speech_trainlist)
     
