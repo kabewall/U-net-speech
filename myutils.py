@@ -64,7 +64,6 @@ def SaveSTFT():
             step = target_mag.shape[1] // C.PATCH_LENGTH
 
             for i in tqdm(range(step),leave = False):
-                print("\r%d / %d"%(i, step), end='')
                 target_mag_p = target_mag[: , i*C.PATCH_LENGTH : (i+1)*C.PATCH_LENGTH]
                 target_mag_p /= norm
 
@@ -74,7 +73,6 @@ def SaveSTFT():
                 noise_mag /= norm
 
                 addnoise_mag = target_mag_p + noise_mag
-#                 addnoise_mag = target_mag_p
                 addnoise_mag /= norm
                 
                 fname = str(target_index) + "_" + str(i)
