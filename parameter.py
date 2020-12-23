@@ -11,11 +11,9 @@ FFT_SIZE = 2**10
 H = 2**8
 PATCH_LENGTH = 128
 
-# target_path = "/disk107/DATA/CSJ_RAW/WAV/WAV"
-# noise_path = "/disk107/Datasets/UrbanSound8K"
+target_path = "/disk107/DATA/CSJ_RAW/WAV/WAV"
+noise_path = "/disk107/Datasets/UrbanSound8K"
 
-target_path = "/disk107/Datasets/CMU_ARCTIC"
-noise_path = "/disk107/watakabe//1_mic_diarization/SpeechEnhancement/keystroke_sound"
 
 path_fft = "./Unet_fft/"
 
@@ -25,5 +23,5 @@ Argmentation = False
 Arg_times = 2
 
 batch_size = 20
-learning_rate = 0.002
+learning_rate = 0.001
 epochs = 60
