@@ -77,10 +77,10 @@ class UnetConv(nn.Module):
         y2 = self.lrelu(self.debn2(self.deconv2(torch.cat([y3,x2],dim=1))))
         y1 = self.relu(self.debn1(self.deconv1(torch.cat([y2,x1],dim=1))))
 
-        y = torch.sigmoid(y1)
+        y0 = torch.sigmoid(y1)
         
-        y = torch.squeeze(y) # 20, 512, 128
+        y0 = torch.squeeze(y0) # 20, 512, 128
         y = torch.zeros(sh)
-        y[:,:512,:] = y
+        y[:,:512,:] = y0
 
         return y
