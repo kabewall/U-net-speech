@@ -84,7 +84,7 @@ def main():
                 best_loss = eval_loss
     
         if epoch % 10 == 0: #10回に１回定期保存
-            epoch_model_path = C.model_path+"/model_"+now.strftime('%Y%m%d_%H%M%S')+"_Epoch"+str(C.epochs)+".pt"
+            epoch_model_path = C.model_path+"/model_"+now.strftime('%Y%m%d_%H%M%S')+"_Epoch"+str(epoch)+".pt"
             torch.save(model.state_dict(), epoch_model_path)
             
 if __name__ == "__main__":
