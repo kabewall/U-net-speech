@@ -8,9 +8,13 @@ Created on Wed Dec 23 13:34:38 2020
 
 import myutils as ut
 import parameter as C
+import os
 
 def main():
-
+    
+    if not os.path.exists(C.path_fft):
+        os.mkdir(C.path_fft)
+        
     ut.SaveSTFT()
     
     if C.Argmentation:

@@ -76,7 +76,7 @@ def SaveSTFT():
                 addnoise_mag /= norm
                 
                 fname = str(target_index) + "_" + str(i)
-                np.savez(os.path.join(C.PATH_FFT, fname+".npz"),speech=target_mag_p, addnoise=addnoise_mag)
+                np.savez(os.path.join(C.path_fft, fname+".npz"),speech=target_mag_p, addnoise=addnoise_mag)
                 target_index += 1
         else:
             skip_count += 1
