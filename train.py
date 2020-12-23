@@ -44,8 +44,9 @@ def main():
         train_loss = 0
     
         for batch_idx, (speech, addnoise) in enumerate(train_loader):
-            
-            mask = model(addnoise)
+            speech= speech.to(device)
+            addnoise=addnoise.to(device)
+            mask = model(addnoise).to(device)
             enhance = addnoise * mask
             
             loss = criterion(enhance, speech)
@@ -61,7 +62,9 @@ def main():
     
         with torch.no_grad():
             for speech, addnoise in val_loader:
-                mask = model(addnoise)
+                speech= speech.to(device)
+                addnoise=addnoise.to(device)
+                mask = model(addnoise).to(device)
                 enhance = addnoise * mask
     
                 loss = criterion(enhance, speech)
