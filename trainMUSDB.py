@@ -12,7 +12,7 @@ import torch.optim as optim
 import datetime
 import os
 from tqdm import tqdm
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 import parameter as C
 import myutils as ut
@@ -117,6 +117,15 @@ def main():
             torch.save(model.state_dict(), epoch_model_path)
             
     # writer.close()
+    
+    # 結果の出力と描画
+    plt.figure()
+    plt.plot(range(1, C.epochs+1),train_loss_list, label='train_loss')
+    plt.plot(range(1, C.epochs+1),val_loss_list, label='test_loss')
+    plt.xlabel('epoch')
+    plt.legend()
+    plt.savefig(C.MUSDB_model+"/model_"+now.strftime('%Y%m%d_%H%M%S')+'_loss.png')
+    
             
 if __name__ == "__main__":
     main()
