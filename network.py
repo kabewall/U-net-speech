@@ -9,6 +9,97 @@ Created on Wed Dec 23 13:36:59 2020
 import torch.nn as nn
 import torch
 
+class Encoder(nn.Module):
+    def __init__(self,Cin,Cout):
+        super(Encoder, self).__init__()
+        self.Cin = Cin
+        self.Cout = Cout
+        
+        self.conv = nn.Conv2d(self.Cin, self.Cout, 4, 2, 1)
+        self.bn=nn.BatchNorm2d(self.Cout)
+        self.relu = nn.ReLU()
+        
+    def forward(self,x):
+        x = self.conv(x)
+        x = self.bn(x)
+        x = self.relu(x)
+        return x
+    
+class Decoder(nn.Module):
+    def __init__(self,Cin,Cout):
+        super(Decoder, self).__init__()
+        self.Cin = Cin
+        self.Cout = Cout
+        self.deconv = nn.ConvTranspose2d(2*Cin, Cout, 4,2,1)
+        self.bn = nn.BatchNorm2d(self.Cout)
+        self.relu = nn.ReLU()
+        
+    def forward(self,x,skip):
+        x = torch.cat([x,skip],dim=1)
+        x = self.deconv(x)
+        x = self.bn(x)
+        x = self.relu(x)
+        return x
+        
+class UnetConv2(nn.Module):
+    def __init__(self):
+        super(UnetConv2, self).__init__()
+        self.firstCh = 1
+        self.finalCh = 1
+
+        self.kernel_size = 4
+        self.stride = 2
+        self.pudding = 1
+
+        self.ch = [16,32,64,128,256,512]
+        
+        self.encoder1=Encoder(self.firstCh, self.ch[0])
+        self.encoder2=Encoder(self.ch[0], self.ch[1])
+        self.encoder3=Encoder(self.ch[1], self.ch[2])
+        self.encoder4=Encoder(self.ch[2], self.ch[3])
+        self.encoder5=Encoder(self.ch[3], self.ch[4])
+        self.encoder6=Encoder(self.ch[4], self.ch[5])
+        
+        self.decoder6=Decoder(self.ch[5], self.ch[4])
+        self.decoder5=Decoder(self.ch[4], self.ch[3])
+        self.decoder4=Decoder(self.ch[3], self.ch[2])
+        self.decoder3=Decoder(self.ch[2], self.ch[1])
+        self.decoder2=Decoder(self.ch[1], self.ch[0])
+        self.decoder1=Decoder(self.ch[0], self.finalCh)
+        
+    def forward(self,x):
+        sh = x.shape
+        x = x[:,:512,:] #20 ,512 ,128 ちょっとちっちゃくする
+        x = torch.unsqueeze(x,1) #20, 1, 512, 128 #チャンネル次元の追加
+
+        x1 = self.encoder1(x) # 20, 16, 256, 64
+        x2 = self.encoder2(x1) #20, 32, 128, 32
+        x3 = self.encoder3(x2) #20, 64, 64, 16
+        x4 = self.encoder4(x3) #20, 128, 32, 8
+        x5 = self.encoder5(x4) #20, 256, 16, 4
+        x6 = self.encoder6(x5) #20, 512, 8, 2
+        
+        #LSTMとか追加するならここ
+        y = x6 #20, 512, 8, 2
+        
+        y = self.decoder6(y, x6)
+        y = self.decoder5(y, x5)
+        y = self.decoder4(y, x4)
+        y = self.decoder3(y, x3)
+        y = self.decoder2(y, x2)
+        y = self.decoder1(y, x1)
+        
+        y = torch.sigmoid(y)
+        
+        y = torch.squeeze(y) # 20, 512, 128
+        y0 = torch.zeros(sh)
+        y0[:,:512,:] = y
+
+        return y0
+        
+        
+        
+
 class UnetConv(nn.Module):
     def __init__(self): # input channel / output channels
         super(UnetConv, self).__init__()
@@ -84,3 +175,12 @@ class UnetConv(nn.Module):
         y[:,:512,:] = y0
 
         return y
+
+def main():
+    x = torch.rand([20 ,513 ,128])
+    model = UnetConv2()
+    y = model(x)
+    print("Input data:",x.shape,"\nOutput data",y.shape)
+    
+if __name__ == "__main__":
+    main()

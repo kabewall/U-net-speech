@@ -14,6 +14,10 @@ PATCH_LENGTH = 128
 target_path = "/disk107/DATA/CSJ_RAW/WAV/WAV"
 noise_path = "/disk107/Datasets/UrbanSound8K"
 
+MUSDB_path = "D:\yamamoto\音源分離用データ\MUSDB"
+MUSDB_fft = "./Unet_MUSDB_fft/"
+MUSDB_model = "./Unet_MUSDB_model/"
+
 
 path_fft = "./Unet_fft/"
 
@@ -23,5 +27,5 @@ Argmentation = False
 Arg_times = 2
 
 batch_size = 20
-learning_rate = 0.001
-epochs = 60
+learning_rate = 0.002
+epochs = 200
